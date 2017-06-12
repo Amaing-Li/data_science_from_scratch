@@ -31,13 +31,19 @@ total_connections = sum(number_of_firends(user) for user in users)
 
 number_users = len(users)
 avg_connections = total_connections / number_users
-print("avarage connections: ", avg_connections)
+print("avgarage connections: ", avg_connections)
 
 # create a list (user_id,number_of_friends)
 num_friends_by_id = [(user["id"], number_of_firends(user)) for user in users]
 
-# sorted(num_friends_by_id, key=lambda  user_id,num_friends: num_friends, reverse=True)
-# there is something wrong in the just above line code
 
-# for i in num_friends_by_id:
-#     print(i)
+def friends_of_friend_ids_bad(user):
+    # "foaf" is short for "firend of a friend"
+    return [foaf["id"]
+            for friend in user["friends"]  # for each of user's friend
+            for foaf in friend["friends"]]  # get each of _their_ friends
+
+
+print("friends of friends of users[0]: ", friends_of_friend_ids_bad(users[0]))
+
+
