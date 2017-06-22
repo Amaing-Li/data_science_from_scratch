@@ -98,3 +98,40 @@ def inverse_normal_cdf(p, mu=0, sigma=1, tolerance=0.00001):  ### wonderful
         else:
             break
     return mid_z
+
+
+# the mean is p, the standard deviation is math.sqrt(p*(1-p))
+def bernoulli_trial(p):
+    return 1 if random.random() < p else 0
+
+
+# according to the central limit theorem
+# mean u=np
+# standard deviation sigma=math.sqrt(np(1-p))
+def binomial(n, p):
+    return sum(bernoulli_trial(p) for _ in range(n))
+
+
+from collections import Counter
+
+
+def make_hist(p, n, num_points):
+    data = [binomial(n, p) for _ in range(num_points)]
+
+    # user a bar chart to show the actual binominal samples
+    histogram = Counter(data)
+    plt.bar([x for x in histogram.keys()],
+            [v / num_points for v in histogram.values()],  # v /num_points = probability
+            0.8, color='0.75')
+
+    mu = p * n
+    sigma = math.sqrt(n * p * (1 - p))
+
+    # use a line chart to show the normal approximation
+    xs = range(min(data), max(data) + 1)
+    ys = [normal_cdf(i + 0.5, mu, sigma) - normal_cdf(i - 0.5, mu, sigma) for i in xs]
+    plt.plot(xs,ys)
+    plt.title("Binomial Distribution vs. Normal Approximation")
+    plt.show()
+
+make_hist(0.75,100,10000)
